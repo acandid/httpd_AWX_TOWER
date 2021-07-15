@@ -1,0 +1,23 @@
+<VirtualHost *:443>
+  ServerName {{ httpd_AWX_TOWER_domain }}
+  DocumentRoot {{ httpd_AWX_TOWER_docroot }}
+
+  ErrorLog {{ httpd_AWX_TOWER_errorlog }}{{ httpd_AWX_TOWER_domain }}-error.log
+  CustomLog {{ httpd_AWX_TOWER_customlog }}{{ httpd_AWX_TOWER_domain }}-access.log combined
+
+  SSLEngine on
+  SSLCipherSuite AES256+EECDH:AES256+EDH
+  SSLProtocol All -SSLv2 -SSLv3
+  SSLHonorCipherOrder On
+  SSLCertificateFile {{ httpd_AWX_TOWER_cert_path }}{{ httpd_AWX_TOWER_domain }}.crt
+  SSLCertificateKeyFile {{ httpd_AWX_TOWER_cert_path }}{{ httpd_AWX_TOWER_domain }}.key
+  SSLCertificateChainFile {{ httpd_AWX_TOWER_cert_path }}{{ httpd_AWX_TOWER_domain }}_ca.crt
+
+  <Directory {{ httpd_AWX_TOWER_docroot }}>
+    AllowOverride All
+    Options -Indexes +FollowSymLinks
+    Require all granted
+  </Directory>
+
+
+</VirtualHost>

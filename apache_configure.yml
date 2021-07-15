@@ -1,0 +1,72 @@
+---
+- name: Install and configure Web Server
+  hosts: all
+  become: yes
+  vars_files:
+    - defaults/main.yml
+  tasks:
+    - name: Include Vars
+      include_vars: "vars/{{ ansible_os_family }}.yml"
+
+    - block:
+        - name: Install packages for Red Hat family
+          yum:
+            name: "{{ httpd_AWX_TOWER_web_pkg }}"
+            state: present
+
+        - name: Configure Vhost http RedHat family
+          template:
+            src: templates/vhost.conf.j2
+            dest: "{{ httpd_AWX_TOWER_vhost_path }}{{ httpd_AWX_TOWER_domain }}.conf"
+
+        - name: Configure Vhost SSL Red Hat family
+          template:
+            src: templates/ssl_vhost.conf.j2
+            dest: "{{ httpd_AWX_TOWER_vhost_path }}ssl.{{ httpd_AWX_TOWER_domain }}.conf"
+          notify: restart_web
+      when: ansible_os_family == 'RedHat'
+
+    - block:
+        - name: Install packages for Debian family
+          apt:
+            name: "{{ httpd_AWX_TOWER_web_pkg }}"
+            state: present
+            force_apt_get: true
+
+        - name: Configure Vhost http Debian family
+          template:
+            src: templates/vhost.conf.j2
+            dest: "{{ httpd_AWX_TOWER_vhost_path }}{{ httpd_AWX_TOWER_domain }}.conf"
+
+        - name: Configure Vhost SSL Debian family
+          template:
+            src: templates/ssl_vhost.conf.j2
+            dest: "{{ httpd_AWX_TOWER_vhost_path }}ssl.{{ httpd_AWX_TOWER_domain }}.conf"
+
+        - name: Enable new vhost
+          command: "{{ item }}"
+          loop:
+            - a2ensite "{{ httpd_AWX_TOWER_domain }}"
+            - a2ensite "ssl.{{ httpd_AWX_TOWER_domain }}"
+            - a2enmod ssl
+          args:
+            warn: false
+          notify: restart_web
+      when: ansible_os_family == 'Debian'
+
+    - name: Copy Certificates to Web Server
+      copy:
+        src: files/
+        dest: "{{ httpd_AWX_TOWER_cert_path }}"
+
+    - name: Create my test html index file
+      copy:
+        content: "MY WEB SERVER IS UP\n"
+        dest: "{{ httpd_AWX_TOWER_docroot }}/index.html"
+
+  handlers:
+    - name: restart_web
+      service:
+        name: "{{ httpd_AWX_TOWER_web_srv }}"
+        state: restarted
+        enabled: yes

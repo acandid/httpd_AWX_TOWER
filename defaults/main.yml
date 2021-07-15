@@ -1,0 +1,4 @@
+---
+httpd_AWX_TOWER_domain: almircandido.com
+
+httpd_AWX_TOWER_docroot: /var/www/html

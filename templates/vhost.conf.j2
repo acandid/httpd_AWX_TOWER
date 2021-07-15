@@ -1,0 +1,6 @@
+<VirtualHost *:80>
+  ServerName {{ httpd_AWX_TOWER_domain }}
+  ServerAlias www.{{ httpd_AWX_TOWER_domain }}
+
+  Redirect permanent / https://{{ httpd_AWX_TOWER_domain }}/
+</VirtualHost>

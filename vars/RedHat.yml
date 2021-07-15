@@ -1,0 +1,13 @@
+---
+httpd_AWX_TOWER_web_pkg:
+  - httpd
+  - mod_ssl
+
+httpd_AWX_TOWER_errorlog: "/var/log/httpd/"
+httpd_AWX_TOWER_customlog: "/var/log/httpd/"
+
+httpd_AWX_TOWER_cert_path: "/etc/pki/tls/certs/"
+
+httpd_AWX_TOWER_vhost_path: "/etc/httpd/conf.d/"
+
+httpd_AWX_TOWER_web_srv: httpd

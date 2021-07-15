@@ -1,0 +1,13 @@
+---
+httpd_AWX_TOWER_web_pkg:
+  - apache2
+  - python-apt
+
+httpd_AWX_TOWER_errorlog: "/var/log/apache2/"
+httpd_AWX_TOWER_customlog: "/var/log/apache2/"
+
+httpd_AWX_TOWER_cert_path: "/etc/ssl/certs/"
+
+httpd_AWX_TOWER_vhost_path: "/etc/apache2/sites-available/"
+
+httpd_AWX_TOWER_web_srv: apache2
